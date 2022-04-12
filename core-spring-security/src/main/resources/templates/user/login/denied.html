@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head th:replace="layout/header::userHead"></head>
+<body>
+<div th:replace="layout/top::header"></div>
+
+<div class="container">
+    <br/><br/>
+    <div class="jumbotron">
+        <h1>
+            <span th:text="${username}?:_" th:class="'alert alert-danger'"></span>
+            님은 접근 권한이 없습니다.
+        </h1>
+        <br>
+        <h3 th:text="${exception}?:_" ></h3>
+    </div>
+</div>
+<div th:replace="layout/footer::footer"></div>
+</body>
+</html>
