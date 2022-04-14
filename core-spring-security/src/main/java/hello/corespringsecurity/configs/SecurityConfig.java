@@ -1,5 +1,6 @@
-package hello.corespringsecurity;
+package hello.corespringsecurity.configs;
 
+import hello.corespringsecurity.security.filter.AjaxLoginProcessingFilter;
 import hello.corespringsecurity.security.handler.CustomAccessDeniedHandler;
 import hello.corespringsecurity.security.provider.CustomAuthenticationProvider;
 import hello.corespringsecurity.security.service.CustomUserDetailsService;
@@ -9,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -23,8 +26,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Slf4j
+@Order(1)
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -41,6 +46,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     AuthenticationProvider authenticationProvider() {
         return new CustomAuthenticationProvider();
+    }
+
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 
     @Bean
@@ -82,11 +92,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginProcessingUrl("/login_proc") // usernamePasswordFilter 통과 url - [post] /login_proc www-form-urlencoded
                 .authenticationDetailsSource(formAuthenticationDetailsSource)
                 .successHandler(customSimpleUrlAuthenticationSuccessHandler)
-                .failureHandler(customAuthenticationFailureHandler)
-                .permitAll();
+                .failureHandler(customAuthenticationFailureHandler);
+//                .permitAll();
 
         http.exceptionHandling()
                 .accessDeniedHandler(accessDeniedHandler());
+
 
     }
 
